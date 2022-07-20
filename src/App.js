@@ -12,6 +12,7 @@ import { Switch, Route, NavLink } from "react-router-dom";
 import {
   ARBITRUM,
   AVALANCHE,
+  MAINNET,
   DEFAULT_SLIPPAGE_AMOUNT,
   SLIPPAGE_BPS_KEY,
   IS_PNL_IN_LEVERAGE_KEY,
@@ -132,6 +133,8 @@ const arbWsProvider = new ethers.providers.WebSocketProvider(
 
 const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
 
+const bscWsProvider = new ethers.providers.JsonRpcProvider("https://data-seed-prebsc-1-s1.binance.org:8545/");
+
 function getWsProvider(active, chainId) {
   if (!active) {
     return;
@@ -142,6 +145,10 @@ function getWsProvider(active, chainId) {
 
   if (chainId === AVALANCHE) {
     return avaxWsProvider;
+  }
+
+  if (chainId === MAINNET) {
+    return bscWsProvider;
   }
 }
 
@@ -256,7 +263,14 @@ function AppHeaderUser({
       icon: "ic_avalanche_24.svg",
       color: "#E841424D",
     },
+    {
+      label: "Binance",
+      value: MAINNET,
+      icon: "ic_bsc_24.svg",
+      color: "#E841424D",
+    },
   ];
+
 
   useEffect(() => {
     if (active) {
