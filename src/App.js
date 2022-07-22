@@ -12,6 +12,7 @@ import { Switch, Route, NavLink } from "react-router-dom";
 import {
   ARBITRUM,
   AVALANCHE,
+  TESTNET,
   MAINNET,
   DEFAULT_SLIPPAGE_AMOUNT,
   SLIPPAGE_BPS_KEY,
@@ -133,8 +134,9 @@ const arbWsProvider = new ethers.providers.WebSocketProvider(
 
 const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
 
-const bscWsProvider = new ethers.providers.JsonRpcProvider("https://data-seed-prebsc-1-s1.binance.org:8545/");
+const bscWsProvider = new ethers.providers.JsonRpcProvider("https://bsc-dataseed.binance.org");
 
+const bsctestWsProvider = new ethers.providers.JsonRpcProvider("https://data-seed-prebsc-1-s1.binance.org:8545/");
 function getWsProvider(active, chainId) {
   if (!active) {
     return;
@@ -149,6 +151,10 @@ function getWsProvider(active, chainId) {
 
   if (chainId === MAINNET) {
     return bscWsProvider;
+  }
+
+  if (chainId === TESTNET) {
+    return bsctestWsProvider;
   }
 }
 
@@ -252,22 +258,22 @@ function AppHeaderUser({
   const showSelector = true;
   const networkOptions = [
     {
-      label: "Arbitrum",
-      value: ARBITRUM,
-      icon: "ic_arbitrum_24.svg",
-      color: "#264f79",
-    },
-    {
       label: "Avalanche",
       value: AVALANCHE,
       icon: "ic_avalanche_24.svg",
       color: "#E841424D",
     },
     {
-      label: "Binance",
+      label: "BSC Mainnet",
       value: MAINNET,
       icon: "ic_bsc_24.svg",
       color: "#E841424D",
+    },
+    {
+      label: "BSC Testnet",
+      value: TESTNET,
+      icon: "ic_bsc_24.svg",
+      color: "#264f79",
     },
   ];
 
@@ -591,7 +597,7 @@ function FullApp() {
   }, [library, pendingTxns, chainId]);
 
   const vaultAddress = getContract(chainId, "Vault");
-  const positionRouterAddress = getContract(chainId, "PositionRouter");
+ // const positionRouterAddress = getContract(chainId, "PositionRouter");
 
   useEffect(() => {
     const wsVaultAbi = chainId === ARBITRUM ? VaultV2.abi : VaultV2b.abi;
@@ -601,7 +607,7 @@ function FullApp() {
     }
 
     const wsVault = new ethers.Contract(vaultAddress, wsVaultAbi, wsProvider);
-    const wsPositionRouter = new ethers.Contract(positionRouterAddress, PositionRouter.abi, wsProvider);
+    //const wsPositionRouter = new ethers.Contract(positionRouterAddress, PositionRouter.abi, wsProvider);
 
     const callExchangeRef = (method, ...args) => {
       if (!exchangeRef || !exchangeRef.current) {
@@ -624,18 +630,18 @@ function FullApp() {
     wsVault.on("ClosePosition", onClosePosition);
     wsVault.on("IncreasePosition", onIncreasePosition);
     wsVault.on("DecreasePosition", onDecreasePosition);
-    wsPositionRouter.on("CancelIncreasePosition", onCancelIncreasePosition);
-    wsPositionRouter.on("CancelDecreasePosition", onCancelDecreasePosition);
+    //wsPositionRouter.on("CancelIncreasePosition", onCancelIncreasePosition);
+    //wsPositionRouter.on("CancelDecreasePosition", onCancelDecreasePosition);
 
     return function cleanup() {
       wsVault.off("UpdatePosition", onUpdatePosition);
       wsVault.off("ClosePosition", onClosePosition);
       wsVault.off("IncreasePosition", onIncreasePosition);
       wsVault.off("DecreasePosition", onDecreasePosition);
-      wsPositionRouter.off("CancelIncreasePosition", onCancelIncreasePosition);
-      wsPositionRouter.off("CancelDecreasePosition", onCancelDecreasePosition);
+      //wsPositionRouter.off("CancelIncreasePosition", onCancelIncreasePosition);
+      //wsPositionRouter.off("CancelDecreasePosition", onCancelDecreasePosition);
     };
-  }, [active, chainId, vaultAddress, positionRouterAddress]);
+  }, [active, chainId, vaultAddress, /*positionRouterAddress*/]);
 
   return (
     <>
