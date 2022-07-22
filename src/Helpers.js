@@ -32,7 +32,7 @@ export const TESTNET = 97;
 export const ARBITRUM_TESTNET = 421611;
 export const ARBITRUM = 42161;
 // TODO take it from web3
-export const DEFAULT_CHAIN_ID = ARBITRUM;
+export const DEFAULT_CHAIN_ID = MAINNET;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
 export const MIN_PROFIT_TIME = 0;
@@ -50,14 +50,20 @@ const CHAIN_NAMES_MAP = {
 const GAS_PRICE_ADJUSTMENT_MAP = {
   [ARBITRUM]: "0",
   [AVALANCHE]: "3000000000", // 3 gwei
+  [MAINNET]: "3000000000", // 3 gwei
+  [TESTNET]: "3000000000", // 3 gwei
 };
 
 const MAX_GAS_PRICE_MAP = {
   [AVALANCHE]: "200000000000", // 200 gwei
+  [MAINNET]: "200000000000", // 3 gwei
+  [TESTNET]: "200000000000", // 3 gwei
 };
 
 const ARBITRUM_RPC_PROVIDERS = ["https://arb1.arbitrum.io/rpc"];
 const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
+const MAINNET_RPC_PROVIDERS = ["https://bsc-dataseed.binance.org"];
+const TESTNET_RPC_PROVIDERS = ["https://data-seed-prebsc-1-s1.binance.org:8545/"];
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
 export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
 export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = "eagerconnect";
@@ -257,7 +263,7 @@ export const platformTokens = {
   },
 };
 
-const supportedChainIds = [ARBITRUM, AVALANCHE];
+const supportedChainIds = [ARBITRUM, AVALANCHE, MAINNET, TESTNET];
 const injectedConnector = new InjectedConnector({
   supportedChainIds,
 });
@@ -268,6 +274,8 @@ const getWalletConnectConnector = () => {
     rpc: {
       [AVALANCHE]: AVALANCHE_RPC_PROVIDERS[0],
       [ARBITRUM]: ARBITRUM_RPC_PROVIDERS[0],
+      [MAINNET]: MAINNET_RPC_PROVIDERS[0],
+      [TESTNET]: TESTNET_RPC_PROVIDERS[0],
     },
     qrcode: true,
     chainId,
